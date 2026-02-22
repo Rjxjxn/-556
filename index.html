@@ -150,9 +150,38 @@
                 { title:"暖暮拉麵", tag:"美食" }, { title:"燒肉敘敘苑", tag:"美食" },
                 { title:"Parco City", tag:"購物" }, { title:"唐吉訶德", tag:"購物" }
             ],
+            // 換成泛用性最高的 maps.google.com/?q= 格式
             DEFAULT_ITINERARY_EVENTS: [
-                { dayIndex:0, events:[{time:"09:20",title:"抵達那霸機場 & 取車",note:"預計出關+取車約1.5小時",cost:"租車費",imgKey:"airport",mapUrl:""},{time:"11:30",title:"糸滿魚市場",note:"海鮮生魚片",cost:"¥2000",imgKey:"market",mapUrl:""},{time:"15:30",title:"美國村",note:"逛街、海邊",cost:"",imgKey:"american-village",mapUrl:""}] },
-                { dayIndex:1, events:[{time:"08:00",title:"青之洞窟浮潛",note:"真榮田岬",cost:"¥4000",imgKey:"snorkeling",mapUrl:""},{time:"19:00",title:"琉球之牛",note:"頂級燒肉",cost:"¥8000",imgKey:"beef",mapUrl:""}] }
+                { dayIndex:0, events:[
+                    {time:"09:20",title:"抵達那霸機場 & 取車",note:"預計出關+取車約1.5小時",cost:"租車費",imgKey:"airport",mapUrl:"https://maps.google.com/?q=那覇空港"},
+                    {time:"11:30",title:"糸滿魚市場",note:"海鮮生魚片",cost:"¥2000",imgKey:"market",mapUrl:"https://maps.google.com/?q=糸満漁業協同組合+お魚センター"},
+                    {time:"15:30",title:"Snoopy Surf Shop",note:"美國村",cost:"",imgKey:"american-village",mapUrl:"https://maps.google.com/?q=SNOOPY+SURF+SHOP+Okinawa"},
+                    {time:"20:00",title:"美國村夜景",note:"日落步道",cost:"",imgKey:"night-view",mapUrl:"https://maps.google.com/?q=美浜アメリカンビレッジ"}
+                ] },
+                { dayIndex:1, events:[
+                    {time:"08:00",title:"青之洞窟浮潛",note:"真榮田岬",cost:"¥4000",imgKey:"snorkeling",mapUrl:"https://maps.google.com/?q=真栄田岬"},
+                    {time:"11:30",title:"Pizzeria da ENZO",note:"窯烤披薩",cost:"¥2000",imgKey:"pizza",mapUrl:"https://maps.google.com/?q=Pizzeria+da+ENZO"},
+                    {time:"19:00",title:"琉球之牛",note:"頂級燒肉",cost:"¥8000",imgKey:"beef",mapUrl:"https://maps.google.com/?q=焼肉+琉球の牛+恩納本館"}
+                ] },
+                { dayIndex:2, events:[
+                    {time:"11:00",title:"古宇利大橋",note:"心形岩",cost:"",imgKey:"bridge",mapUrl:"https://maps.google.com/?q=ティーヌ浜+ハートロック"},
+                    {time:"14:00",title:"美麗海水族館",note:"黑潮之海",cost:"¥2180",imgKey:"aquarium",mapUrl:"https://maps.google.com/?q=沖縄美ら海水族館"},
+                    {time:"19:00",title:"阿古豬涮涮鍋",note:"恩納豚",cost:"¥4000",imgKey:"food-taco",mapUrl:"https://maps.google.com/?q=あぐー豚しゃぶしゃぶ専門店"}
+                ] },
+                { dayIndex:3, events:[
+                    {time:"11:00",title:"PARCO CITY",note:"最大百貨",cost:"",imgKey:"parco",mapUrl:"https://maps.google.com/?q=サンエー浦添西海岸+PARCO+CITY"},
+                    {time:"20:30",title:"唐吉訶德",note:"國際通24H",cost:"",imgKey:"donki",mapUrl:"https://maps.google.com/?q=ドン・キホーテ+那覇国際通り店"}
+                ] },
+                { dayIndex:4, events:[
+                    {time:"09:30",title:"波上宮",note:"海邊神社",cost:"¥800",imgKey:"shrine",mapUrl:"https://maps.google.com/?q=波上宮"},
+                    {time:"14:00",title:"壺屋通",note:"文青下午茶",cost:"¥1000",imgKey:"coffee",mapUrl:"https://maps.google.com/?q=壺屋やちむん通り"},
+                    {time:"22:00",title:"傑克牛排",note:"美式復古",cost:"¥2500",imgKey:"beef",mapUrl:"https://maps.google.com/?q=ジャッキーステーキハウス"}
+                ] },
+                { dayIndex:5, events:[
+                    {time:"11:00",title:"Ashibinaa Outlet",note:"最後購物",cost:"",imgKey:"outlet",mapUrl:"https://maps.google.com/?q=沖縄アウトレットモール+あしびなー"},
+                    {time:"15:00",title:"iias 豐崎",note:"DMM水族館",cost:"",imgKey:"parco",mapUrl:"https://maps.google.com/?q=イーアス沖縄豊崎"},
+                    {time:"19:40",title:"那霸機場",note:"返台",cost:"",imgKey:"airport",mapUrl:"https://maps.google.com/?q=那覇空港"}
+                ] }
             ]
         };
 
@@ -263,19 +292,18 @@
                     const events = State.itineraryEvents.filter(e => e.dayIndex === index).sort((a, b) => a.time.localeCompare(b.time));
 
                     let eventsHtml = events.map(e => {
-                        // 【優化】地圖按鈕邏輯：如果有網址就導向網址，如果沒有就導向 Google Maps 標題搜尋
                         let mapButtonHtml = '';
                         if (e.mapUrl && e.mapUrl.startsWith('http')) {
-                            // 使用者有提供明確的網址
+                            // 加上 rel="noopener noreferrer" 確保安全性與相容性
                             mapButtonHtml = `
-                                <a href="${e.mapUrl}" target="_blank" class="text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded flex items-center gap-1 text-[10px] hover:bg-blue-500/20 transition-colors ml-2" title="開啟地圖">
+                                <a href="${e.mapUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded flex items-center gap-1 text-[10px] hover:bg-blue-500/20 transition-colors ml-2" title="開啟地圖">
                                     <i data-lucide="map-pin" width="12"></i> 地圖
                                 </a>`;
                         } else {
-                            // 沒有提供網址，或是舊的預設資料：自動產生搜尋連結
-                            const searchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.title)}`;
+                            // 換成 maps.google.com/?q= 格式
+                            const searchUrl = `https://maps.google.com/?q=${encodeURIComponent(e.title)}`;
                             mapButtonHtml = `
-                                <a href="${searchUrl}" target="_blank" class="text-slate-400 bg-slate-700 px-1.5 py-0.5 rounded flex items-center gap-1 text-[10px] hover:bg-slate-600 hover:text-white transition-colors ml-2" title="以標題搜尋地圖">
+                                <a href="${searchUrl}" target="_blank" rel="noopener noreferrer" class="text-slate-400 bg-slate-700 px-1.5 py-0.5 rounded flex items-center gap-1 text-[10px] hover:bg-slate-600 hover:text-white transition-colors ml-2" title="以標題搜尋地圖">
                                     <i data-lucide="search" width="12"></i> 搜尋
                                 </a>`;
                         }
@@ -321,7 +349,7 @@
                             <div class="text-xs text-slate-500">${e.note}</div>
                         </div>
                         <div class="flex items-center gap-3">
-                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.title)}" target="_blank" class="text-slate-500 hover:text-blue-400 transition-colors">
+                            <a href="https://maps.google.com/?q=${encodeURIComponent(e.title)}" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-blue-400 transition-colors">
                                 <i data-lucide="search" width="14"></i>
                             </a>
                             <button onclick="App.deleteBackup('${e.id}')" class="text-slate-600 hover:text-red-400 transition-colors">
@@ -490,19 +518,11 @@
                 if (!title) return;
                 const note = prompt("請輸入備註 (選填)");
                 
-                // 【新增】明確獨立詢問地圖連結 URL
                 const mapUrl = prompt("請輸入 Google Maps 連結網址 (選填，若留空系統會自動使用標題來搜尋)");
                 
                 if (DB.refs.itinerary) {
                     DB.refs.itinerary.add({
-                        dayIndex: dayIndex, 
-                        time: time, 
-                        title: title, 
-                        note: note || '', 
-                        cost: '', 
-                        mapUrl: mapUrl || '', // 將 mapUrl 獨立存放
-                        imgKey: 'default', 
-                        timestamp: Date.now()
+                        dayIndex: dayIndex, time: time, title: title, note: note || '', cost: '', mapUrl: mapUrl || '', imgKey: 'default', timestamp: Date.now()
                     });
                 }
             },
